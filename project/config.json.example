@@ -1,0 +1,12 @@
+{
+    "appName": "BaseProject",
+    "appPort" : "3000",
+    "mode": "Development",
+    "dbConfiguration": {
+        "host"      : "baseProject",
+        "port"      : "5432",
+        "user"      : "baseProjectUser",
+        "password"  : "baseProjectUserSecret",
+        "database"  : "BaseProject"
+    }
+}

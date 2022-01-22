@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # dotenv
 .env
+config.json
 
 # orm confing
 ormconfig.json

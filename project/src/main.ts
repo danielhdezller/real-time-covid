@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { AppConfiguration } from './config-provider/configurations/app.configuration';
-import { EnvironmentModes } from './config-provider/interfaces/app.interfaces';
+import { AppConfiguration } from '@/config-provider/configurations/app.configuration';
+import { EnvironmentModes } from '@/config-provider/interfaces/app.interfaces';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +15,7 @@ async function bootstrap() {
         await bootstrapSwagger(app);
     }
 
-  await app.listen(3000);
+  await app.listen(appConfiguration.appPort);
 }
 
 function bootstrapSwagger(app : INestApplication) : void {

@@ -6,6 +6,12 @@ import { AppConfiguration } from "../configurations/app.configuration";
 import { ConfigurationProviderOptions } from "../interfaces/app.interfaces";
 import * as _ from "lodash";
 
+
+/**
+ * A service that provides the app configuration values.
+ * @export
+ * @class ConfigProviderService
+ */
 @Injectable()
 export class ConfigProviderService {
 
@@ -23,7 +29,7 @@ export class ConfigProviderService {
   
       
       /**
-       * Extract the env object from somewhere (in this case from a configuration file).
+       * Extract the env object (in this case from a configuration file).
        *
        * @private
        * @returns {Promise<any>}

@@ -4,7 +4,6 @@ import { IsNotEmpty, IsPort, IsString } from "class-validator";
 export class DBConfiguration {
     /**
      * The DB Host.
-     *
      * @type {string}
      * @memberof DBConfiguration
      */
@@ -14,7 +13,6 @@ export class DBConfiguration {
  
      /**
       * The DB port.
-      *
       * @type {string}
       * @memberof DBConfiguration
       */
@@ -23,7 +21,6 @@ export class DBConfiguration {
  
      /**
       * The DB user.
-      *
       * @type {string}
       * @memberof DBConfiguration
       */
@@ -33,7 +30,6 @@ export class DBConfiguration {
  
      /**
       * The DB password.
-      *
       * @type {string}
       * @memberof DBConfiguration
       */
@@ -44,7 +40,6 @@ export class DBConfiguration {
  
      /**
       * The database name.
-      *
       * @type {string}
       * @memberof DBConfiguration
       */
@@ -54,7 +49,6 @@ export class DBConfiguration {
  
      /**
       * Return the typeOrm config which should be used the app.
-      *
       * @returns {*}
       * @memberof DBConfiguration
       */
