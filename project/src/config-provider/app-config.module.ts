@@ -13,15 +13,15 @@ export class AppConfigModule extends createConfigurableDynamicRootModule<
       provide: AppConfiguration,
       inject: [ConfigurationProviderOptions, ],
       useFactory: 
-        async (configurationProvider : ConfigurationProviderOptions) => {
+        async (configurationProviderOptions : ConfigurationProviderOptions) => {
             const configProviderService = 
-            new ConfigProviderService(configurationProvider);
+            new ConfigProviderService(configurationProviderOptions);
             await configProviderService.init();
             return configProviderService.getAppConfiguration();
             
         }
   }],
-  exports: [],
+  exports: [AppConfiguration, ],
 }) {
   static deferred = () =>
     AppConfigModule.externallyConfigured(AppConfigModule, 0);

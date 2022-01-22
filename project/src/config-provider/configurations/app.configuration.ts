@@ -10,4 +10,14 @@ export class AppConfiguration {
 
     private readonly dbConfiguration : DBConfiguration;
 
+    /**
+     * Check if the configuration is in develop mode.
+     *
+     * @returns {boolean}
+     * @memberof AppConfiguration
+     */
+         isMode(mode : EnvironmentModes) : boolean {
+            return this.mode == mode;
+        }
+
 }
