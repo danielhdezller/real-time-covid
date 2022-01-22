@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+
+  real-time-covid-sql-server:
+    image: postgres:14.1
+    command: ["postgres", "-c", "log_statement=${DB_LOG_LEVEL:-all}"]
+    restart: always
+    networks:
+      - real-time-covid-network
+    ports:
+      - ${NODE_DEBUGGER_PORT:-5432}:5432
+      - ${SERVER_PORT:-300}:3000
+    environment:
+      - POSTGRES_USER=${DB_USER:-RealTimeCovidAppUser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-RealTimeCovidAppUserSecret}
+      - POSTGRES_DB=${DB_DATABASE:-RealTimeCovid}
+
+  
+  real-time-covid-nest-server:
+      build:
+        context: .
+        dockerfile: ./images/nestjs/Dockerfile
+      restart: "no"
+      ports:
+      - ${NODE_PORT:-3000}:3000
+      - ${NODE_DEBUGGER_PORT:-9229}:9229
+      - ${NODE_DEBUGGER_TEST_PORT:-9230}:9230
+      networks:
+      - real-time-covid-network
+      volumes:
+      - ../../../project:/usr/src/project
+      - ./images/nestjs/entrypoint.sh:/entrypoint.sh
+      depends_on:
+      - real-time-covid-sql-server
+networks:
+  real-time-covid-network:
+    external: false
