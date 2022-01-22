@@ -16,7 +16,7 @@ export class AppConfigModule extends createConfigurableDynamicRootModule<
         async (configurationProvider : ConfigurationProviderOptions) => {
             const configProviderService = 
             new ConfigProviderService(configurationProvider);
-            await ConfigProviderService.init();
+            await configProviderService.init();
             return configProviderService.getAppConfiguration();
             
         }
