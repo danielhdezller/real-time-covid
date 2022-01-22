@@ -1,5 +1,6 @@
 import { createConfigurableDynamicRootModule } from "@golevelup/nestjs-modules";
 import { Module } from "@nestjs/common";
+import { ConfigurationProviderOptions } from "./interfaces/app.interfaces";
 
 
 @Module({})
