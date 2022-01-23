@@ -1,8 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { response } from 'express';
 
 import { map, Observable } from 'rxjs';
-import { AllStatusByCountryDto } from '../Dto/all-status-by-country.dto';
+import {
+  AllDataDto,
+  AllStatusByCountryDto,
+} from '../Dto/all-status-by-country.dto';
 
 @Injectable()
 export class CovidInformationService {
@@ -34,5 +38,18 @@ export class CovidInformationService {
       .pipe(
         map((response: { data: [AllStatusByCountryDto] }) => response.data),
       );
+  }
+
+  /**
+   * Obtain the all data Covid
+   * from the external API.
+   * @see https://documenter.getpostman.com/view/10808728/SzS8rjbc#071be6ab-ebcc-40dc-be8b-9209ab7caca5
+   * @return {*}  {Observable<[AllDataDto]>}
+   * @memberof CovidInformationService
+   */
+  getAllData(): Observable<[AllDataDto]> {
+    return this.httpService
+      .get(`https://api.covid19api.com/all`)
+      .pipe(map((response: { data: [AllDataDto] }) => response.data));
   }
 }

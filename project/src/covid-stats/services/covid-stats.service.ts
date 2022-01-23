@@ -1,9 +1,15 @@
-import { AllStatusByCountryDto } from '@/covid-information/Dto/all-status-by-country.dto';
+import {
+  AllDataDto,
+  AllStatusByCountryDto,
+} from '@/covid-information/Dto/all-status-by-country.dto';
+import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
 import { CovidInformationService } from '@/covid-information/services/covid-information.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
+import { StatRankingDto } from '../Dto/stats-ranking.dto';
 import { TrendDto } from '../Dto/trend.dto';
+import { StatsTypes } from '../enums/stats.enum';
 
 @Injectable()
 export class CovidStatsService {
@@ -131,16 +137,30 @@ export class CovidStatsService {
     return trendDto;
   }
 
+  /**
+   *
+   * Obtain the recovery trend per country of the last six month.
+   * @param {{
+   *     country: string;
+   *     startDate: Date;
+   *     endDate: Date;
+   *   }} {
+   *     country,
+   *     startDate,
+   *     endDate,
+   *   }
+   * @return {*}  {Promise<TrendDto>}
+   * @memberof CovidStatsService
+   */
   async lastSixMonthRecoveryTrend({
     country,
+    startDate,
+    endDate,
   }: {
     country: string;
+    startDate: Date;
+    endDate: Date;
   }): Promise<TrendDto> {
-    const averageDaysPerMonth = 30;
-    const month = 6;
-    const endDate = new Date();
-    const startDate = new Date(endDate.getDate() - averageDaysPerMonth * month);
-
     const allStatusByCountry: [AllStatusByCountryDto] = await lastValueFrom(
       this.covidInformationService.getByCountryAllStatus({
         country,
@@ -148,12 +168,103 @@ export class CovidStatsService {
         endDate,
       }),
     );
-    if (!allStatusByCountry)
-      throw new HttpException(
-        'Covid Data not found.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
 
     return this.calculateLastSixMonthTrend(allStatusByCountry);
+  }
+
+  /**
+   * Transform the raw all data to the the list of the first 10 countries ranking by stats.
+   * @param {{
+   *     stats: StatsTypes;
+   *     dateRangeDto: DateRangeDto;
+   *     allDataDto: AllDataDto[];
+   *   }} {
+   *     stats,
+   *     dateRangeDto,
+   *     allDataDto,
+   *   }
+   * @return {*}  {StatRankingDto}
+   * @memberof CovidStatsService
+   */
+  topTenStatsRanking({
+    stats,
+    dateRangeDto,
+    allDataDto,
+  }: {
+    stats: StatsTypes;
+    dateRangeDto: DateRangeDto;
+    allDataDto: AllDataDto[];
+  }): StatRankingDto {
+    const statRankingDto = new StatRankingDto();
+
+    statRankingDto.stats = stats;
+    statRankingDto.startedAt = dateRangeDto.startDate;
+    statRankingDto.endAt = dateRangeDto.endDate;
+
+    const filtered = allDataDto.filter(
+      (data) =>
+        data.Date <= dateRangeDto.endDate &&
+        data.Date >= dateRangeDto.startDate,
+    );
+
+    let ordered: AllDataDto[] = allDataDto;
+
+    //sort by stats
+    //the case critical is not allowed at the public API
+    switch (stats) {
+      case StatsTypes.ACTIVE:
+        ordered = filtered.sort((a, b) => a.Active + b.Active);
+        break;
+      case StatsTypes.CONFIRMED:
+        ordered = filtered.sort((a, b) => a.Confirmed + b.Confirmed);
+        break;
+      case StatsTypes.DEATH:
+        ordered = filtered.sort((a, b) => a.Deaths + b.Deaths);
+        break;
+      case StatsTypes.RECOVERED:
+        ordered = filtered.sort((a, b) => a.Recovered + b.Recovered);
+        break;
+      case StatsTypes.CRITICAL:
+        throw new HttpException(
+          'The state Critical is not found on the data provider.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+        break;
+      default:
+    }
+
+    //select push the list of countries, previously ordered.
+    let i = 0;
+    do {
+      i = i + 1;
+      statRankingDto.country.push(ordered[i].Country);
+    } while (i <= 10);
+    return statRankingDto;
+  }
+
+  /**
+   * Obtain the list of the first 10 countries ranking by stats.
+   * @param {{
+   *     stats: StatsTypes;
+   *     dateRangeDto: DateRangeDto;
+   *   }} {
+   *     stats,
+   *     dateRangeDto,
+   *   }
+   * @return {*}  {Promise<StatRankingDto>}
+   * @memberof CovidStatsService
+   */
+  async statsRanking({
+    stats,
+    dateRangeDto,
+  }: {
+    stats: StatsTypes;
+    dateRangeDto: DateRangeDto;
+  }): Promise<StatRankingDto> {
+    const allDataDto: [AllDataDto] = await lastValueFrom(
+      this.covidInformationService.getAllData(),
+    );
+
+    return this.topTenStatsRanking({ stats, dateRangeDto, allDataDto });
   }
 }
