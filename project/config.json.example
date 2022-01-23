@@ -1,12 +1,12 @@
 {
-    "appName": "BaseProject",
+    "appName": "RealTimeCovid",
     "appPort" : "3000",
     "mode": "Development",
     "dbConfiguration": {
-        "host"      : "baseProject",
+        "host"      : "real-time-covid-sql-server",
         "port"      : "5432",
-        "user"      : "baseProjectUser",
-        "password"  : "baseProjectUserSecret",
-        "database"  : "BaseProject"
+        "user"      : "RealTimeCovidAppUser",
+        "password"  : "RealTimeCovidAppUserSecret",
+        "database"  : "RealTimeCovid"
     }
 }

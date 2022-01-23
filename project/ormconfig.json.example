@@ -1,12 +1,12 @@
 {
     "type": "postgres",
-    "host": "localhost",
+    "host": "real-time-covid-sql-server",
     "port": 5432,
-    "username": "baseProjectUser",
-    "password": "baseProjectUserSecret",
+    "username": "RealTimeCovidAppUser",
+    "password": "RealTimeCovidAppUserSecret",
     "synchronize": false,
     "autoLoadEntities": true,
-    "database": "BaseProject",
+    "database": "RealTimeCovid",
     "entities": [
         "src/**/*.entity{.ts,.js}"
     ],
