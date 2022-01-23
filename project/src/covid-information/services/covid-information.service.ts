@@ -3,18 +3,33 @@ import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 
 import { map, Observable } from 'rxjs';
+import { AllStatusByCountryDto } from '../Dto/all-status-by-country.dto';
 
 @Injectable()
 export class CovidInformationService {
   constructor(private httpService: HttpService) {}
 
-    getByCountryAllStatus(
+  /**
+   * Obtain the Covid status per country and date range,
+   * from the external API
+   * @see https://documenter.getpostman.com/view/10808728/SzS8rjbc#071be6ab-ebcc-40dc-be8b-9209ab7caca5
+   * @param {string} country
+   * @param {Date} startDate
+   * @param {Date} endDate
+   * @return {*}  {Observable<[AllStatusByCountryDto]>}
+   * @memberof CovidInformationService
+   */
+  getByCountryAllStatus(
     country: string,
     startDate: Date,
     endDate: Date,
-  ): Observable<AxiosResponse> {
-    return this.httpService.get(
-      `https://api.covid19api.com/country/${country}?from=${startDate}&to=${endDate}`,
-      ).pipe( map((response: { data: any; }) => response.data))
+  ): Observable<[AllStatusByCountryDto]> {
+    return this.httpService
+      .get(
+        `https://api.covid19api.com/country/${country}?from=${startDate}&to=${endDate}`,
+      )
+      .pipe(
+        map((response: { data: [AllStatusByCountryDto] }) => response.data),
+      );
   }
 }
