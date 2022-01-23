@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { normalize } from 'path';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AppConfigModule } from './config-provider/app-config.module';
 import { AppConfiguration } from './config-provider/configurations/app.configuration';
 import { CovidInformationModule } from './covid-information/covid-information.module';
