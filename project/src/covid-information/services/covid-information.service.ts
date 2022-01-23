@@ -1,19 +1,20 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
+
+import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class CovidInformationService {
   constructor(private httpService: HttpService) {}
 
-  async getByCountryAllStatus(
+    getByCountryAllStatus(
     country: string,
     startDate: Date,
     endDate: Date,
-  ): Promise<Observable<AxiosResponse>> {
+  ): Observable<AxiosResponse> {
     return this.httpService.get(
       `https://api.covid19api.com/country/${country}?from=${startDate}&to=${endDate}`,
-    );
+      ).pipe( map((response: { data: any; }) => response.data))
   }
 }

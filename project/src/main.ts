@@ -27,7 +27,7 @@ function bootstrapSwagger(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('teal-time-covid-swagger', app, document);
+  SwaggerModule.setup('real-time-covid-swagger', app, document);
 }
 
 bootstrap();
