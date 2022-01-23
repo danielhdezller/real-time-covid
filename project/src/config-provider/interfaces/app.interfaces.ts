@@ -8,7 +8,7 @@ export class ConfigurationProviderOptions {
   envPath?: string;
 
   envObject?: any;
-};
+}
 
 /**
  * The app allowed modes.
@@ -16,6 +16,6 @@ export class ConfigurationProviderOptions {
  * @enum {number}
  */
 export enum EnvironmentModes {
-    Development = "Development",
-    Production = "Production"
-};
+  Development = 'Development',
+  Production = 'Production',
+}
