@@ -1,9 +1,9 @@
 import { AllStatusByCountryDto } from '@/covid-information/Dto/all-status-by-country.dto';
 import { CovidInformationService } from '@/covid-information/services/covid-information.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
+import { TrendDto } from '../Dto/trend.dto';
 
 @Injectable()
 export class CovidStatsService {
@@ -24,15 +24,11 @@ export class CovidStatsService {
       new PercentageRecoveryDeathPerCountryDto();
 
     let totalDeath: number = 0,
-      totalActive: number = 0,
       totalRecovered: number = 0,
       totalConfirmed: number = 0;
 
     allStatusByCountry.forEach(function (a) {
       totalDeath += a.Deaths;
-    });
-    allStatusByCountry.forEach(function (a) {
-      totalActive += a.Active;
     });
     allStatusByCountry.forEach(function (a) {
       totalRecovered += a.Recovered;
@@ -76,11 +72,11 @@ export class CovidStatsService {
     endDate: Date;
   }): Promise<PercentageRecoveryDeathPerCountryDto> {
     const allStatusByCountry: [AllStatusByCountryDto] = await lastValueFrom(
-      this.covidInformationService.getByCountryAllStatus(
+      this.covidInformationService.getByCountryAllStatus({
         country,
         startDate,
         endDate,
-      ),
+      }),
     );
     if (!allStatusByCountry)
       throw new HttpException(
@@ -91,5 +87,73 @@ export class CovidStatsService {
     return this.calculatePercentagesOfRecoveredDeathPerCountry(
       allStatusByCountry,
     );
+  }
+
+  /**
+   * Calculate the recovery tendency for a given range date, taking the first value and lhe last value different to 0 .
+   * @param {AllStatusByCountryDto[]} allStatusByCountry The range data.
+   * @return {*}  {TrendDto}
+   * @memberof CovidStatsService
+   */
+  calculateLastSixMonthTrend(
+    allStatusByCountry: AllStatusByCountryDto[],
+  ): TrendDto {
+    const trendDto = new TrendDto();
+
+    const ordered = allStatusByCountry.sort(function (a, b) {
+      return new Date(b.Date).getTime() + new Date(a.Date).getTime();
+    });
+
+    let length = ordered.length,
+      firstDay: number = 0,
+      lastDay: number = 0,
+      i = 0;
+
+    //Find the first day with recovered value in the range.
+    do {
+      i = i + 1;
+      firstDay = ordered[i].Recovered;
+      trendDto.firstTrendValue = ordered[i].Recovered;
+      trendDto.firstTrendValueFrom = ordered[i].Date;
+    } while (ordered[i].Recovered === 0);
+
+    //Find the last day with recovered value in the range.
+    do {
+      length = length - 1;
+      lastDay = ordered[length].Recovered;
+      trendDto.lastTrendValue = ordered[length].Recovered;
+      trendDto.lastTrendValueAt = ordered[length].Date;
+    } while (ordered[length].Recovered === 0);
+
+    trendDto.trendTendency = (lastDay / firstDay) * 100;
+    trendDto.country = allStatusByCountry[0].Country;
+
+    return trendDto;
+  }
+
+  async lastSixMonthRecoveryTrend({
+    country,
+  }: {
+    country: string;
+  }): Promise<TrendDto> {
+    const averageDaysPerMonth = 30;
+    const month = 6;
+    const endDate = new Date();
+    const startDate = new Date(endDate.getDate() - averageDaysPerMonth * month);
+
+    const allStatusByCountry: [AllStatusByCountryDto] = await lastValueFrom(
+      this.covidInformationService.getByCountryAllStatus({
+        country,
+        startDate,
+        endDate,
+      }),
+    );
+    if (!allStatusByCountry)
+      throw new HttpException(
+        'Covid Data not found.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+
+    return this.calculateLastSixMonthTrend(allStatusByCountry);
   }
 }

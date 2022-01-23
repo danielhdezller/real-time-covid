@@ -1,8 +1,8 @@
-import { AllStatusByCountryDto } from '@/covid-information/Dto/all-status-by-country.dto';
 import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
+import { TrendDto } from '../Dto/trend.dto';
 import { CovidStatsService } from '../services/covid-stats.service';
 
 @Controller('covid-stats')
@@ -10,7 +10,7 @@ import { CovidStatsService } from '../services/covid-stats.service';
 export class CovidStatsController {
   constructor(private covidStatsService: CovidStatsService) {}
 
-  @Get(':country')
+  @Get('country/:country')
   @ApiOkResponse({
     type: PercentageRecoveryDeathPerCountryDto,
   })
@@ -22,6 +22,19 @@ export class CovidStatsController {
       country,
       startDate: dateRangeDto.startDate,
       endDate: dateRangeDto.startDate,
+    });
+  }
+
+  @Get('last-six-month-trend/country/:country')
+  @ApiOkResponse({
+    type: TrendDto,
+  })
+  async lastSixMonthRecoveryTrend(
+    @Param('country') country: string,
+    @Query() dateRangeDto: DateRangeDto,
+  ): Promise<TrendDto> {
+    return await this.covidStatsService.lastSixMonthRecoveryTrend({
+      country,
     });
   }
 }
