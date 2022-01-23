@@ -4,6 +4,7 @@ import { normalize } from 'path';
 import { AppConfigModule } from './config-provider/app-config.module';
 import { AppConfiguration } from './config-provider/configurations/app.configuration';
 import { CovidInformationModule } from './covid-information/covid-information.module';
+import { CovidStatsModule } from './covid-stats/covid-stats.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CovidInformationModule } from './covid-information/covid-information.mo
       },
     }),
     CovidInformationModule,
+    CovidStatsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,8 @@
-import { INestApplication } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -15,6 +19,15 @@ async function bootstrap() {
     await bootstrapSwagger(app);
   }
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      exceptionFactory: (errors) => new BadRequestException(errors),
+    }),
+  );
+
   await app.listen(appConfiguration.appPort);
 }
 
@@ -27,7 +40,7 @@ function bootstrapSwagger(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('teal-time-covid-swagger', app, document);
+  SwaggerModule.setup('real-time-covid-swagger', app, document);
 }
 
 bootstrap();
