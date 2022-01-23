@@ -9,26 +9,22 @@ import { AppConfiguration } from './config-provider/configurations/app.configura
 @Module({
   imports: [
     // Typeorm App Configuration
-    TypeOrmModule.forRootAsync(
-      {
-          imports    : [AppConfigModule.deferred(), ],
-          inject     : [AppConfiguration, ],
-          useFactory : async (appConfiguration : AppConfiguration) => {
-              return appConfiguration.getTypeOrmConfig();
-          },
-      }
-  ),
+    TypeOrmModule.forRootAsync({
+      imports: [AppConfigModule.deferred()],
+      inject: [AppConfiguration],
+      useFactory: async (appConfiguration: AppConfiguration) => {
+        return appConfiguration.getTypeOrmConfig();
+      },
+    }),
     // Configuration provider module
-    AppConfigModule.forRootAsync(
-        AppConfigModule,
-        {
-            useFactory: () => {
-                return {
-                    envPath: normalize(`${__dirname}/../config.json`),
-                };
-            },
-        }
-    ),],
+    AppConfigModule.forRootAsync(AppConfigModule, {
+      useFactory: () => {
+        return {
+          envPath: normalize(`${__dirname}/../config.json`),
+        };
+      },
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
