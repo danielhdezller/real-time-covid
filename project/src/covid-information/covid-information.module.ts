@@ -8,4 +8,4 @@ import { CovidInformationService } from './services/covid-information.service';
   providers: [CovidInformationService],
   exports: [CovidInformationService],
 })
-export class UserModule {}
+export class CovidInformationModule {}

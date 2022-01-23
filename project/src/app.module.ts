@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from './config-provider/app-config.module';
 import { AppConfiguration } from './config-provider/configurations/app.configuration';
+import { CovidInformationModule } from './covid-information/covid-information.module';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { AppConfiguration } from './config-provider/configurations/app.configura
         };
       },
     }),
+    CovidInformationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
