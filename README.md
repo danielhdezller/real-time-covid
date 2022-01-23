@@ -1,5 +1,5 @@
 # real-time-covid
-The aims of this small project is to provide a few endpoints to thats transform raw data in to information.
+The aims of this small project is to provide a few endpoints to transform raw data in to information.
 
 ## Steps to start the application.
 1. Clone the project.
