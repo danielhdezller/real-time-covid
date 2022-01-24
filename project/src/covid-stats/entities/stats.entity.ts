@@ -1,5 +1,6 @@
 import { AppEntity } from "@/shared/entities/app-entity";
 import { Column, Entity } from "typeorm";
+import { StatsTypes } from "../enums/stats.enum";
 
 @Entity({
     name: "stats", 
@@ -18,6 +19,12 @@ export class Stats extends AppEntity {
         nullable: true
     })
     country?: string;
+
+    @Column({
+        length: 10,
+        nullable: true
+    })
+    stats?: StatsTypes;
 
     @Column({
         type: 'date',
