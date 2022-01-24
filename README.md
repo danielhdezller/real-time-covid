@@ -5,7 +5,7 @@ The aims of this small project is to provide a few endpoints to transform raw da
 1. Clone the project.
 3. Set the environments variables.
 ```bash
-Copy and paste the files ormconfig.json.example and config.json.example
+Copy and paste the file config.json.example
 with out the .example at the end.
  ```
 2. From the terminal move to the directory .docker/environments/dev and run the command:
