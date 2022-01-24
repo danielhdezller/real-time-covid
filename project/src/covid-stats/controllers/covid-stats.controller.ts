@@ -1,5 +1,11 @@
 import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
-import { Controller, ExecutionContext, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  ExecutionContext,
+  Get,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import * as moment from 'moment';
 import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';

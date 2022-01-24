@@ -1,5 +1,4 @@
-import { HttpException, } from "@nestjs/common";
-
+import { HttpException } from '@nestjs/common';
 
 /**
  * The interface that represents the allowed translation arguments
@@ -8,10 +7,12 @@ import { HttpException, } from "@nestjs/common";
  * @interface TranslationArguments
  */
 export interface TranslationArguments {
-    [key : string] : string | {
-        translatable : true,
-        value : string
-    }
+  [key: string]:
+    | string
+    | {
+        translatable: true;
+        value: string;
+      };
 }
 
 /**
@@ -21,5 +22,5 @@ export interface TranslationArguments {
  * @interface TranslatableError
  */
 export interface TranslatableError extends HttpException {
-    translationArguments : TranslationArguments,
+  translationArguments: TranslationArguments;
 }

@@ -5,17 +5,69 @@ import {
 import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
 import { CovidInformationService } from '@/covid-information/services/covid-information.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom } from 'rxjs';
 import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
 import { StatRankingDto } from '../Dto/stats-ranking.dto';
 import { TrendDto } from '../Dto/trend.dto';
+import { Stats } from '../entities/stats.entity';
 import { StatsTypes } from '../enums/stats.enum';
+import { StatsRepository } from '../repositories/stats.repository';
 
 @Injectable()
 export class CovidStatsService {
   constructor(
     private readonly covidInformationService: CovidInformationService,
+    @InjectRepository(StatsRepository)
+    private readonly statsRepository: StatsRepository,
   ) {}
+
+  /**
+   * Create a new registry of the Stat entity.
+   * @param {{
+   *     rawData: any;
+   *     information: any;
+   *     country: string;
+   *     stats: StatsTypes;
+   *     startDateRange: Date;
+   *     endDateRange: Date;
+   *   }} {
+   *     rawData,
+   *     information,
+   *     country,
+   *     stats,
+   *     startDateRange,
+   *     endDateRange,
+   *   }
+   * @return {*}  {Promise<Stats>}
+   * @memberof CovidStatsService
+   */
+  async createStats({
+    rawData,
+    information,
+    country,
+    stats,
+    startDateRange,
+    endDateRange,
+  }: {
+    rawData: any;
+    information: any;
+    country?: string;
+    stats?: StatsTypes;
+    startDateRange?: Date;
+    endDateRange?: Date;
+  }): Promise<Stats> {
+    const newStats = this.statsRepository.create({
+      rawData: rawData,
+      information: information,
+      stats: stats,
+      country: country,
+      startDateRange: startDateRange,
+      endDateRange: endDateRange,
+    });
+
+    return this.statsRepository.save(newStats);
+  }
 
   /**
    * Calculate the percentages of death and recovery of people by covid, per sample data.
@@ -84,15 +136,18 @@ export class CovidStatsService {
         endDate,
       }),
     );
-    if (!allStatusByCountry)
-      throw new HttpException(
-        'Covid Data not found.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const information =
+      this.calculatePercentagesOfRecoveredDeathPerCountry(allStatusByCountry);
 
-    return this.calculatePercentagesOfRecoveredDeathPerCountry(
-      allStatusByCountry,
-    );
+    await this.createStats({
+      rawData: allStatusByCountry,
+      information,
+      country,
+      startDateRange: startDate,
+      endDateRange: endDate,
+    });
+
+    return information;
   }
 
   /**
@@ -169,7 +224,17 @@ export class CovidStatsService {
       }),
     );
 
-    return this.calculateLastSixMonthTrend(allStatusByCountry);
+    const information = this.calculateLastSixMonthTrend(allStatusByCountry);
+
+    await this.createStats({
+      rawData: allStatusByCountry,
+      information,
+      country,
+      startDateRange: startDate,
+      endDateRange: endDate,
+    });
+
+    return information;
   }
 
   /**
@@ -265,6 +330,20 @@ export class CovidStatsService {
       this.covidInformationService.getAllData(),
     );
 
-    return this.topTenStatsRanking({ stats, dateRangeDto, allDataDto });
+    const information = this.topTenStatsRanking({
+      stats,
+      dateRangeDto,
+      allDataDto,
+    });
+
+    await this.createStats({
+      rawData: allDataDto,
+      information,
+      stats,
+      startDateRange: dateRangeDto.startDate,
+      endDateRange: dateRangeDto.endDate,
+    });
+
+    return information;
   }
 }
