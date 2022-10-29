@@ -1,12 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { response } from 'express';
-
+import { Injectable } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import {
   AllDataDto,
   AllStatusByCountryDto,
-} from '../Dto/all-status-by-country.dto';
+} from '../dtos/all-status-by-country.dto';
 
 @Injectable()
 export class CovidInformationService {

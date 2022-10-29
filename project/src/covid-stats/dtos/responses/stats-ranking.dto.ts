@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { StatsTypes } from '../enums/stats.enum';
+import { StatsTypes } from '../../enums/stats.enum';
 
 export class StatRankingDto {
   @ApiProperty()

@@ -1,15 +1,15 @@
 import {
   AllDataDto,
   AllStatusByCountryDto,
-} from '@/covid-information/Dto/all-status-by-country.dto';
-import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
+} from '@/covid-information/dtos/all-status-by-country.dto';
+import { DateRangeQueryDto } from '@/covid-stats/dtos/queries/date-range.dto';
 import { CovidInformationService } from '@/covid-information/services/covid-information.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom } from 'rxjs';
-import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
-import { StatRankingDto } from '../Dto/stats-ranking.dto';
-import { TrendDto } from '../Dto/trend.dto';
+import { PercentageRecoveryDeathPerCountryDto } from '../dtos/responses/percentage-recovery-death.dto';
+import { StatRankingDto } from '../dtos/responses/stats-ranking.dto';
+import { TrendDto } from '../dtos/responses/trend.dto';
 import { Stats } from '../entities/stats.entity';
 import { StatsTypes } from '../enums/stats.enum';
 import { StatsRepository } from '../repositories/stats.repository';
@@ -257,7 +257,7 @@ export class CovidStatsService {
     allDataDto,
   }: {
     stats: StatsTypes;
-    dateRangeDto: DateRangeDto;
+    dateRangeDto: DateRangeQueryDto;
     allDataDto: AllDataDto[];
   }): StatRankingDto {
     const statRankingDto = new StatRankingDto();
@@ -324,7 +324,7 @@ export class CovidStatsService {
     dateRangeDto,
   }: {
     stats: StatsTypes;
-    dateRangeDto: DateRangeDto;
+    dateRangeDto: DateRangeQueryDto;
   }): Promise<StatRankingDto> {
     const allDataDto: [AllDataDto] = await lastValueFrom(
       this.covidInformationService.getAllData(),

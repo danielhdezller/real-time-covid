@@ -1,16 +1,15 @@
-import { DateRangeDto } from '@/covid-information/Dto/date-range.dto';
+import { DateRangeQueryDto } from '@/covid-stats/dtos/queries/date-range.dto';
 import {
   Controller,
-  ExecutionContext,
   Get,
   Param,
   Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import * as moment from 'moment';
-import { PercentageRecoveryDeathPerCountryDto } from '../Dto/percentage-recovery-death.dto';
-import { StatRankingDto } from '../Dto/stats-ranking.dto';
-import { TrendDto } from '../Dto/trend.dto';
+import { PercentageRecoveryDeathPerCountryDto } from '../dtos/responses/percentage-recovery-death.dto';
+import { StatRankingDto } from '../dtos/responses/stats-ranking.dto';
+import { TrendDto } from '../dtos/responses/trend.dto';
 import { StatsTypes } from '../enums/stats.enum';
 import { CovidStatsService } from '../services/covid-stats.service';
 
@@ -29,7 +28,7 @@ export class CovidStatsController {
   })
   async percentagesOfRecoveredDeathPerCountry(
     @Param('country') country: string,
-    @Query() dateRangeDto: DateRangeDto,
+    @Query() dateRangeDto: DateRangeQueryDto,
   ): Promise<PercentageRecoveryDeathPerCountryDto> {
     return await this.covidStatsService.percentagesOfRecoveredDeathPerCountry({
       country,
@@ -70,7 +69,7 @@ export class CovidStatsController {
   })
   async statsRanking(
     @Param('stats') stats: StatsTypes,
-    @Query() dateRangeDto: DateRangeDto,
+    @Query() dateRangeDto: DateRangeQueryDto,
   ): Promise<StatRankingDto> {
     return await this.covidStatsService.statsRanking({
       stats,

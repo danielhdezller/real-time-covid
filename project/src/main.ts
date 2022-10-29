@@ -36,7 +36,6 @@ function bootstrapSwagger(app: INestApplication): void {
     .setTitle('Real-Time-Covid')
     .setDescription('Real-Time-Covid API')
     .setVersion('1')
-    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
