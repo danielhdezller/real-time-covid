@@ -3,16 +3,19 @@ The aims of this small project is to provide a few endpoints to transform raw da
 
 ## Steps to start the application.
 1. Clone the project.
-3. Set the environments variables.
+2. Set the environments variables.
 ```bash
 Copy and paste the file config.json.example
 with out the .example at the end.
  ```
-2. From the terminal move to the directory .docker/environments/dev and run the command:
+3. From the terminal move to the directory .docker/environments/dev and run the command:
 ```bash
  # to start the application service and database.
  $ docker-compose up 
  ```
+4. Look the Swagger:
+
+- [Real-Time-Covid Swagger](http://localhost:3000/real-time-covid-swagger) Open it after the server start.
 
  ## Developed with:
 - [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
